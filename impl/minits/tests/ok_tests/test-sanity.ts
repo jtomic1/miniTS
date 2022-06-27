@@ -35,31 +35,49 @@ let myFunc = function (x: number, y: number): number {
 	return x * y;
 };
 
-let myFunc = function (x: number, y: number): boolean{
+let myFunc2 = function (x: number, y: number): boolean{
 	return x === y;
 }
 
-myFunc(a);
+myFunc(a, b);
+
+let x: number = 0;
+
+var b: number = 5;
+
+let test: number;
+
+let aaa: boolean;
 
 while (x !== 1) {
-  b = b + 4;
-  a = myFunc(a);
+  test = 2 + 4 + 3;
+  aaa = myFunc(a, x);
 };
 
 do {
   let a = 5;
   let b = a + 5;
   var stringy = "hello";
-  a = b + stringy;
   myFunc(myFunc(a));
 } while (x === 2);
 
+function voidFunc(): void {
+  return;
+}
+
 voidFunc();
+
+function multiParamFunc(a: number, b: string, c: boolean): number{
+  if(c == true){
+    return a;
+  }
+  return 0;
+}
 
 multiParamFunc(a, b, c);
 
 let funcDec = function(): void{
- doNothing();
+ myFunc();
  let embeddedFunc = function(){
    var a = 5;
    var b = 5;

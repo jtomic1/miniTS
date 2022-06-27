@@ -1,4 +1,8 @@
-var a;
+var a: number;
+
+function printToStd(text: string): void{
+  return;
+}
 
 try {
   a = 5 / 0;
@@ -14,12 +18,12 @@ try {
   const c: number = 10;
   a = a + b + c;
 } catch {
-  print('An error has occured!');
+  printToStd('An error has occured!');
 }
 
 try {
-  funcA(a);
-  funcB(b);
+  printToStd(a);
+  printToStd(b);
 } finally {
-  funcC(a, b);
+  printToStd(a, b);
 }

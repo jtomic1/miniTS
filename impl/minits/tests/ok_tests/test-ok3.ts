@@ -2,7 +2,8 @@ function increment(a: number): boolean {
   return a + 5;
 }
 
-let a = 5;
+let a: number;
+a = 5;
 
 switch(a){
 
@@ -17,12 +18,14 @@ switch(a){
     break;
 }
 
-let b: number = 0;
+let b: number;
+b = 0;
 
 switch (--a) {
 
    case 1:
-      for (let i = 0; i !== 5; i++){
+      let i = 0;
+      for (; i !== 5; i++){
           b++;
       }
       break;

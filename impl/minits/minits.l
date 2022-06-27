@@ -10,19 +10,19 @@
 
 [ \t\n]+             { /* skip */ }
 
-"let"		     { return _DECLARATION;}
-"var"		     { return _DECLARATION;}
-"const"		     { return _DECLARATION;}
+"let"		     { yylval.s = strdup(yytext); return _DECLARATION;}
+"var"		     { yylval.s = strdup(yytext); return _DECLARATION;}
+"const"		     { yylval.s = strdup(yytext); return _DECLARATION;}
 
 "function"	     { return _FUNCTION;}
 
-"number"             { return _TYPE; }
-"boolean"            { return _TYPE; }
-"bigint"	     { return _TYPE;}
-"string"	     { return _TYPE;}
-"any"	  	     { return _TYPE;}
-"undefined"	     { return _TYPE;}
-"void"	  	     { return _TYPE;}
+"number"             { yylval.i = NUMBER; return _TYPE; }
+"boolean"            { yylval.i = BOOLEAN; return _TYPE; }
+"bigint"	     { yylval.i = BIGINT; return _TYPE;}
+"string"	     { yylval.i = STRING; return _TYPE;}
+"any"	  	     { yylval.i = ANY; return _TYPE;}
+"undefined"	     { yylval.i = UNDEFINED; return _TYPE;}
+"void"	  	     { yylval.i = VOID; return _TYPE;}
 
 "if"                 { return _IF; }
 "else"               { return _ELSE; }
@@ -62,34 +62,35 @@
 "++"                 { return _INC; }
 "--"                 { return _DEC; }
 
-"+"                  { return _AROP; }
-"-"                  { return _AROP; }
-"*"                  { return _AROP; }
-"/"                  { return _AROP; }
+"+"                  { yylval.i = ADD; return _AROP; }
+"-"                  { yylval.i = SUB; return _AROP; }
+"*"                  { yylval.i = MUL; return _AROP; }
+"/"                  { yylval.i = DIV; return _AROP; }
 
 
 "=>"                 { return _ARROW; }
-"<"                  { return _RELOP; }
-">"                  { return _RELOP; }
-"<="                 { return _RELOP; }
-">="                 { return _RELOP; }
-"=="                 { return _RELOP; }
-"!="                 { return _RELOP; }
-"==="                { return _RELOP; }
-"!=="                { return _RELOP; }
 
-"true"|"false"		 { return _BOOLEAN;}
+"<"                  { yylval.i = LT; return _RELOP; }
+">"                  { yylval.i = GT; return _RELOP; }
+"<="                 { yylval.i = LE; return _RELOP; }
+">="                 { yylval.i = GE; return _RELOP; }
+"=="                 { yylval.i = EQ; return _RELOP; }
+"!="                 { yylval.i = NE; return _RELOP; }
+"==="                { yylval.i = EEQ; return _RELOP; }
+"!=="                { yylval.i = ENE; return _RELOP; }
 
-[a-zA-Z_$][a-zA-Z0-9_$]* { return _ID; }
+"true"|"false"		 { yylval.s = strdup(yytext); return _BOOLEAN;}
 
-[+-]?[0-9]{1,10}     { return _NUMBER;}
-[+-]?("0x"|"0X")[0-9a-fA-F]{1,10}     { return _NUMBER;}
-[+-]?("0o"|"0O")[0-7]{1,10}     { return _NUMBER;}
-[+-]?("0b"|"0B")[0-1]{1,10}     { return _NUMBER;}
-[0-9]{1,10}[n]       { return _BIGINT;}
-[\'][^']*[\']	     { return _STRING;}
-"`"[^`]*"`"    	     { return _STRING;}
-\"[^\"]*\"		     { return _STRING;}
+[a-zA-Z_$][a-zA-Z0-9_$]* { yylval.s = strdup(yytext); return _ID; }
+
+[+-]?[0-9]{1,10}     { yylval.s = strdup(yytext); return _NUMBER;}
+[+-]?("0x"|"0X")[0-9a-fA-F]{1,10}     { yylval.s = strdup(yytext); return _NUMBER;}
+[+-]?("0o"|"0O")[0-7]{1,10}     { yylval.s = strdup(yytext); return _NUMBER;}
+[+-]?("0b"|"0B")[0-1]{1,10}     { yylval.s = strdup(yytext); return _NUMBER;}
+[0-9]{1,10}[n]       { yylval.s = strdup(yytext); return _BIGINT;}
+[\'][^']*[\']	     { yylval.s = strdup(yytext); return _STRING;}
+"`"[^`]*"`"    	     { yylval.s = strdup(yytext); return _STRING;}
+\"[^\"]*\"		     { yylval.s = strdup(yytext); return _STRING;}
 
 \/\/.*               { /* skip */ }
 .                    { printf("line %d: LEXICAL ERROR on char %c\n", yylineno, *yytext);}

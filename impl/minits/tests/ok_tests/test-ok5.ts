@@ -1,4 +1,4 @@
-let a: number = 0;
+let a: number;
 
 a = 2 + a++;
 

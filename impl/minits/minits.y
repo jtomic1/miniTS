@@ -1,15 +1,35 @@
 %{
   #include <stdio.h>
+  #include <stdlib.h>
+  #include "symtab.h"
   #include "defs.h"
 
   int yyparse(void);
   int yylex(void);
   int yyerror(char *s);
+	void warning(char *s);
+
+
   extern int yylineno;
+  char char_buffer[CHAR_BUFFER_LENGTH];
+  int error_count = 0;
+  int warning_count = 0;
+  int var_num = 0;
+  int fun_idx = -1;
+  int fcall_idx = -1;
+  unsigned level = 1;
+
+	int* parameter_map[128];
+	int arg_counter = 0;
 %}
 
-%token _TYPE
-%token _DECLARATION
+%union {
+  int i;
+  char *s;
+}
+
+%token <i> _TYPE
+%token <s> _DECLARATION
 %token _NEWLINE
 %token _FUNCTION
 
@@ -41,11 +61,11 @@
 %token _INC
 %token _DEC
 
-%token _ID
-%token _NUMBER
-%token _BIGINT
-%token _BOOLEAN
-%token _STRING
+%token <s> _ID
+%token <s> _NUMBER
+%token <s> _BIGINT
+%token <s> _BOOLEAN
+%token <s> _STRING
 
 %token _LPAREN
 %token _RPAREN
@@ -54,8 +74,8 @@
 %token _ASSIGN
 %token _COLON
 %token _SEMICOLON
-%token _AROP
-%token _RELOP
+%token <i> _AROP
+%token <i> _RELOP
 
 %token _ARROW
 %token _COMMA
@@ -75,20 +95,57 @@ statement_list
   ;
 
 function
-  : _FUNCTION _ID _LPAREN parameter _RPAREN _COLON _TYPE body
-  | _FUNCTION _ID _LPAREN parameter _RPAREN body
-  | _DECLARATION _ID _ASSIGN _FUNCTION _LPAREN parameter _RPAREN _COLON _TYPE body
-  | _DECLARATION _ID _ASSIGN _FUNCTION _LPAREN parameter _RPAREN body
+  : _FUNCTION _ID _LPAREN parameter_list _RPAREN _COLON _TYPE
+    {
+      fun_idx = lookup_symbol($2, FUN);
+      unsigned current_level = lookup_level($2, FUN);
+      if(fun_idx == -1)
+        fun_idx = insert_symbol($2, FUN, $7, NO_ATR, NO_ATR, level++);
+      else if (fun_idx != -1 && current_level != level)
+        fun_idx = insert_symbol($2, FUN, $7, NO_ATR, NO_ATR, level++);
+			else
+        err("redefinition of function '%s'", $2);
+    }  
+		body
+    {
+      clear_symbols(fun_idx + 1);
+      var_num = 0;
+      level--;
+    }
+  | _FUNCTION _ID _LPAREN parameter_list _RPAREN body
+  | _DECLARATION _ID _ASSIGN _FUNCTION _LPAREN parameter_list _RPAREN _COLON _TYPE
+		{
+      fun_idx = lookup_symbol($2, FUN);
+      unsigned current_level = lookup_level($2, FUN);
+      if(fun_idx == -1)
+        fun_idx = insert_symbol($2, FUN, $9, NO_ATR, NO_ATR, level++);
+      else if (fun_idx != -1 && current_level != level)
+				fun_idx = insert_symbol($2, FUN, $9, NO_ATR, NO_ATR, level++);
+      else
+        err("redefinition of function '%s'", $2);
+    } 
+		body
+	  {
+      clear_symbols(fun_idx + 1);
+      var_num = 0;
+			level--;
+  	}
+  | _DECLARATION _ID _ASSIGN _FUNCTION _LPAREN parameter_list _RPAREN body
   ;
 
-type
-  : _TYPE
+parameter_list
+  : /* empty */
+    { set_atr1(fun_idx, 0);}
+  | parameters
+  ;
+
+parameters
+  : parameter
+  | parameters _COMMA parameter
   ;
 
 parameter
-  : /* empty */
-  | _ID _COLON type
-  | parameter _COMMA _ID _COLON type
+	: _ID _COLON _TYPE
   ;
 
 body
@@ -99,7 +156,15 @@ body
 variable_declaration
   : _DECLARATION _ID 
   | _DECLARATION _ID _COLON _TYPE 
-  ;
+		{
+   		if(lookup_symbol($2, VAR|PAR) == -1)
+        insert_symbol($2, VAR, $4, ++var_num, NO_ATR, level);
+      else if (lookup_symbol($2, VAR|PAR) != -1 && lookup_level($2, VAR) != level)
+				insert_symbol($2, VAR, $4, ++var_num, NO_ATR, level);
+			else
+        err("redeclaration of variable '%s'", $2);
+		}  
+	;
 
 statement
   : compound_statement
@@ -128,10 +193,14 @@ compound_statement
 
 assignment_statement
   : _ID _ASSIGN num_exp
+ 		{
+			if(lookup_symbol($1, VAR|PAR) == -1)
+				err("SEMANTIC ERROR: undefined variable '%s'", $1);
+		}
   ;
 
 inline_assignment
-  : _DECLARATION _ID _COLON type _ASSIGN num_exp
+  : _DECLARATION _ID _COLON _TYPE _ASSIGN num_exp
   | _DECLARATION _ID _ASSIGN num_exp
   ;
 
@@ -156,13 +225,25 @@ literal
   ;
 
 function_call
-  : _ID _LPAREN argument _RPAREN
+  : _ID _LPAREN argument_list _RPAREN
+		{
+			if (lookup_symbol($1, FUN) == -1)
+				err("Undefined function '%s'", $1);
+		}
+	;
+
+argument_list
+  : /* empty */
+	| arguments
   ;
 
+arguments
+  : argument
+  | arguments _COMMA argument
+	;
+
 argument
-  : /* empty */
-  | num_exp
-  | argument _COMMA num_exp
+  : num_exp
   ;
 
 if_statement
@@ -313,9 +394,9 @@ interface_elements
 
 interface_element
   : _ID _COLON _TYPE _SEMICOLON
-  | _LPAREN parameter _RPAREN _COLON _TYPE _SEMICOLON
-  | _ID _COLON _LPAREN parameter _RPAREN _ARROW _TYPE _SEMICOLON
-  | _ID _LPAREN parameter _RPAREN _COLON _TYPE _SEMICOLON
+  | _LPAREN parameter_list _RPAREN _COLON _TYPE _SEMICOLON
+  | _ID _COLON _LPAREN parameter_list _RPAREN _ARROW _TYPE _SEMICOLON
+  | _ID _LPAREN parameter_list _RPAREN _COLON _TYPE _SEMICOLON
   ;
 
 %%
@@ -325,6 +406,27 @@ int yyerror(char *s) {
   return 0;
 }
 
+void warning(char *s) {
+  fprintf(stderr, "\nline %d: WARNING: %s", yylineno, s);
+  warning_count++;
+}
+
 int main() {
-  return yyparse();
+int synerr;
+  init_symtab();
+
+  synerr = yyparse();
+  clear_symtab();
+  
+
+  if(warning_count)
+    printf("\n%d warning(s).\n", warning_count);
+
+  if(error_count)
+    printf("\n%d error(s).\n", error_count);
+
+  if(synerr)
+    return -1; //syntax error
+  else
+    return error_count; //semantic errors
 }

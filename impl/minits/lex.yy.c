@@ -942,17 +942,17 @@ YY_RULE_SETUP
 case 2:
 YY_RULE_SETUP
 #line 13 "minits.l"
-{ return _DECLARATION;}
+{ yylval.s = strdup(yytext); return _DECLARATION;}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
 #line 14 "minits.l"
-{ return _DECLARATION;}
+{ yylval.s = strdup(yytext); return _DECLARATION;}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
 #line 15 "minits.l"
-{ return _DECLARATION;}
+{ yylval.s = strdup(yytext); return _DECLARATION;}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
@@ -962,37 +962,37 @@ YY_RULE_SETUP
 case 6:
 YY_RULE_SETUP
 #line 19 "minits.l"
-{ return _TYPE; }
+{ yylval.i = NUMBER; return _TYPE; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
 #line 20 "minits.l"
-{ return _TYPE; }
+{ yylval.i = BOOLEAN; return _TYPE; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
 #line 21 "minits.l"
-{ return _TYPE;}
+{ yylval.i = BIGINT; return _TYPE;}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
 #line 22 "minits.l"
-{ return _TYPE;}
+{ yylval.i = STRING; return _TYPE;}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
 #line 23 "minits.l"
-{ return _TYPE;}
+{ yylval.i = ANY; return _TYPE;}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
 #line 24 "minits.l"
-{ return _TYPE;}
+{ yylval.i = UNDEFINED; return _TYPE;}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
 #line 25 "minits.l"
-{ return _TYPE;}
+{ yylval.i = VOID; return _TYPE;}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
@@ -1137,22 +1137,22 @@ YY_RULE_SETUP
 case 41:
 YY_RULE_SETUP
 #line 65 "minits.l"
-{ return _AROP; }
+{ yylval.i = ADD; return _AROP; }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
 #line 66 "minits.l"
-{ return _AROP; }
+{ yylval.i = SUB; return _AROP; }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
 #line 67 "minits.l"
-{ return _AROP; }
+{ yylval.i = MUL; return _AROP; }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
 #line 68 "minits.l"
-{ return _AROP; }
+{ yylval.i = DIV; return _AROP; }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
@@ -1161,110 +1161,110 @@ YY_RULE_SETUP
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 72 "minits.l"
-{ return _RELOP; }
+#line 73 "minits.l"
+{ yylval.i = LT; return _RELOP; }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 73 "minits.l"
-{ return _RELOP; }
+#line 74 "minits.l"
+{ yylval.i = GT; return _RELOP; }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 74 "minits.l"
-{ return _RELOP; }
+#line 75 "minits.l"
+{ yylval.i = LE; return _RELOP; }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 75 "minits.l"
-{ return _RELOP; }
+#line 76 "minits.l"
+{ yylval.i = GE; return _RELOP; }
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 76 "minits.l"
-{ return _RELOP; }
+#line 77 "minits.l"
+{ yylval.i = EQ; return _RELOP; }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 77 "minits.l"
-{ return _RELOP; }
+#line 78 "minits.l"
+{ yylval.i = NE; return _RELOP; }
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 78 "minits.l"
-{ return _RELOP; }
+#line 79 "minits.l"
+{ yylval.i = EEQ; return _RELOP; }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 79 "minits.l"
-{ return _RELOP; }
+#line 80 "minits.l"
+{ yylval.i = ENE; return _RELOP; }
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 81 "minits.l"
-{ return _BOOLEAN;}
+#line 82 "minits.l"
+{ yylval.s = strdup(yytext); return _BOOLEAN;}
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 83 "minits.l"
-{ return _ID; }
+#line 84 "minits.l"
+{ yylval.s = strdup(yytext); return _ID; }
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 85 "minits.l"
-{ return _NUMBER;}
+#line 86 "minits.l"
+{ yylval.s = strdup(yytext); return _NUMBER;}
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 86 "minits.l"
-{ return _NUMBER;}
+#line 87 "minits.l"
+{ yylval.s = strdup(yytext); return _NUMBER;}
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 87 "minits.l"
-{ return _NUMBER;}
+#line 88 "minits.l"
+{ yylval.s = strdup(yytext); return _NUMBER;}
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 88 "minits.l"
-{ return _NUMBER;}
+#line 89 "minits.l"
+{ yylval.s = strdup(yytext); return _NUMBER;}
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 89 "minits.l"
-{ return _BIGINT;}
+#line 90 "minits.l"
+{ yylval.s = strdup(yytext); return _BIGINT;}
 	YY_BREAK
 case 61:
 /* rule 61 can match eol */
 YY_RULE_SETUP
-#line 90 "minits.l"
-{ return _STRING;}
+#line 91 "minits.l"
+{ yylval.s = strdup(yytext); return _STRING;}
 	YY_BREAK
 case 62:
 /* rule 62 can match eol */
 YY_RULE_SETUP
-#line 91 "minits.l"
-{ return _STRING;}
+#line 92 "minits.l"
+{ yylval.s = strdup(yytext); return _STRING;}
 	YY_BREAK
 case 63:
 /* rule 63 can match eol */
 YY_RULE_SETUP
-#line 92 "minits.l"
-{ return _STRING;}
+#line 93 "minits.l"
+{ yylval.s = strdup(yytext); return _STRING;}
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 94 "minits.l"
+#line 95 "minits.l"
 { /* skip */ }
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 95 "minits.l"
+#line 96 "minits.l"
 { printf("line %d: LEXICAL ERROR on char %c\n", yylineno, *yytext);}
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 96 "minits.l"
+#line 97 "minits.l"
 ECHO;
 	YY_BREAK
 #line 1271 "lex.yy.c"
@@ -2284,6 +2284,6 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 96 "minits.l"
+#line 97 "minits.l"
 
 
