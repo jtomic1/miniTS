@@ -7,6 +7,8 @@ interface Car {
     getPrice: (numOne: number, numTwo: number, insured: boolean) => number;
 
     owner: string;
+
+    getMaxSpeed(): number;
 }
 
 interface emptyInterface {

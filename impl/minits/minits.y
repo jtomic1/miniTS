@@ -315,6 +315,7 @@ interface_element
   : _ID _COLON _TYPE _SEMICOLON
   | _LPAREN parameter _RPAREN _COLON _TYPE _SEMICOLON
   | _ID _COLON _LPAREN parameter _RPAREN _ARROW _TYPE _SEMICOLON
+  | _ID _LPAREN parameter _RPAREN _COLON _TYPE _SEMICOLON
   ;
 
 %%
